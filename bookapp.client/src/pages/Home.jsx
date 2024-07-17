@@ -1,6 +1,6 @@
 function Home() {
   return (
-    <p>Hello world! Home</p>
+    <p>Home</p>
   );
 }
 

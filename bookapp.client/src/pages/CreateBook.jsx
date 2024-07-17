@@ -1,6 +1,6 @@
 function CreateBook() {
   return (
-    <p>Hello world! Create Book</p>
+    <p>Create Book</p>
   );
 }
 
