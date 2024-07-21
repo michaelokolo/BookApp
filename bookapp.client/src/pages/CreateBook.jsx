@@ -14,32 +14,38 @@ function CreateBook() {
         description: '',
         yearPublished: 0,
     });
-    const handleChange =  (e) => {
+
+    const handleChange = (e) => {
+        const value = e.target.type === 'number' ? parseFloat(e.target.value) || 0 : e.target.value;
         setFormData({
             ...formData,
-            [e.target.id]: e.target.value,
+            [e.target.id]: value,
         });
     };
+
     console.log(formData);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const res = await fetch('/api/books', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
-            });
-            const data = await res.json();
+        const res = await fetch('/api/books', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        });
 
+        if (!res.ok) {
+            throw new Error(`Server responded with status ${res.status}`);
         }
-        catch (error) {
-            console.log(error.message);
+
+        const contentType = res.headers.get("content-type");
+        if (contentType && contentType.indexOf("application/json") !== -1) {
+            const data = await res.json();
+            // Handle the data from the response
+        } else {
+            throw new Error("Received non-JSON response from the server");
         }
-        
-       
-        
     };
     return (
         <Container className="mt-5">
@@ -101,12 +107,12 @@ function CreateBook() {
                         </Button>
                     </Form>
                 </Col>
-                
+
             </Row>
-            
-      </Container>
-    
-  );
+
+        </Container>
+
+    );
 }
 
 export default CreateBook;

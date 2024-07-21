@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using BookApp.Server.Data;
+using Microsoft.AspNetCore.Hosting.Server;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,11 +30,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.MapFallbackToFile("/index.html");
-
 app.Run();
+

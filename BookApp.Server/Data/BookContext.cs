@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BookApp.Server.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookApp.Server.Data
 {
@@ -9,5 +10,9 @@ namespace BookApp.Server.Data
 
         }
         public DbSet<BookApp.Server.Models.Book> Book { get; set; } = default!;
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Book>().ToTable("Book"); // Specify custom table name here if needed
+        }
     }
 }
