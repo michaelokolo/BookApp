@@ -13,7 +13,10 @@ function CreateBook() {
         price: 0,
         description: '',
         yearPublished: 0,
+        imageUrl: ''
     });
+
+    const [imageFile, setImageFile] = useState(null);
 
     const handleChange = (e) => {
         const value = e.target.type === 'number' ? parseFloat(e.target.value) : e.target.value;
@@ -23,16 +26,47 @@ function CreateBook() {
         });
     };
 
-    console.log(formData);
+    const handleFileChange = (e) => {
+        setImageFile(e.target.files[0]);
+    }
+
+    
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        let imageUrl = ''
+        if (imageFile) {
+            const formData = new FormData();
+            formData.append('file', imageFile);
+
+            const res = await fetch('/api/books/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!res.ok) {
+                throw new Error(`Server responded with status ${res.status}`);
+            }
+
+            const data = await res.json();
+            imageUrl = data.url;
+        }
+
+        const bookData = {
+            ...formData,
+            imageUrl
+        };
+
+
+
         const res = await fetch('/api/books', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(formData)
+            body: JSON.stringify(bookData)
         });
 
         if (!res.ok) {
@@ -43,6 +77,7 @@ function CreateBook() {
         if (contentType && contentType.indexOf("application/json") !== -1) {
             const data = await res.json();
             // Handle the data from the response
+            // Redirect to the created book to avoid overposting
         } else {
             throw new Error("Received non-JSON response from the server");
         }
@@ -102,6 +137,14 @@ function CreateBook() {
                                 onChange={handleChange}
                             />
                         </Form.Group>
+                        <Form.Group className="mb-3" controlId="image">
+                            <Form.Label>Book Image</Form.Label>
+                            <Form.Control
+                                type="file"
+                                onChange={handleFileChange}
+                            />
+
+                        </Form.Group>
                         <Button variant="primary" type="submit">
                             Submit
                         </Button>
@@ -116,4 +159,5 @@ function CreateBook() {
 }
 
 export default CreateBook;
+
 
