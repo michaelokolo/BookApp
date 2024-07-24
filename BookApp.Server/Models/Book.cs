@@ -19,6 +19,10 @@ namespace BookApp.Server.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
 
+        [Url]
+        [StringLength(2000)]
+        public string? ImageUrl { get; set; }
+
         [StringLength(500)]
         public string? Description { get; set; }
 

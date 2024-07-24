@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using BookApp.Server.Data;
+using Microsoft.Extensions.Azure;
 using Microsoft.AspNetCore.Hosting.Server;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
@@ -16,6 +17,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<BookContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")));
 
+// Add Azure Blob Service Client
+builder.Services.AddAzureClients(azureBuilder =>
+{
+    azureBuilder.AddBlobServiceClient(builder.Configuration.GetConnectionString("BookAppStorage"));
+});
 
 var app = builder.Build();
 
