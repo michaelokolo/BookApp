@@ -47,6 +47,19 @@ namespace BookApp.Server.Controllers
             return book;
         }
 
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteBook(int id)
+        {
+            var book = await _context.Book.FindAsync(id);
+            if(book == null)
+            {
+                return NotFound();
+            }
+            _context.Book.Remove(book);
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
     }
 }
 
