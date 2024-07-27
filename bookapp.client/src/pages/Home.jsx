@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import Spinner from '../components/Spinner';
+import { FaTrashAlt } from "react-icons/fa";
+import { TiPencil } from "react-icons/ti";
 
 
 function Home() {
@@ -24,6 +26,18 @@ function Home() {
         }
         fetchbooks();
     }, []);
+
+    const handleDelete = async (id) => {
+        const res = await fetch(`/api/books/${id}`, {
+            method: 'DELETE'
+        })
+        if (!res.ok) {
+            throw new Error(`Could not delete book with id: ${id}`)
+            console.log(`Could not delete book with id: ${id}`)
+        }
+            setBooks(prevBooks => prevBooks.filter(book => book.id !== id))
+    }
+
     
     return (
         <main>
@@ -57,7 +71,18 @@ function Home() {
                                         <td>{book.author}</td>
                                         <td>{book.price}</td>
                                         <td>{book.yearPublished}</td>
-                                        <td><div>Edit</div><div>Delete</div></td>
+                                        <td className="gap-3">
+                                            <TiPencil
+                                                color={"green"}
+                                                style={{ cursor: 'pointer' }}
+                                            />
+                                            <FaTrashAlt
+                                                color={"red"}
+                                                className="ms-3"
+                                                style={{ cursor: 'pointer' }}
+                                                onClick={() => handleDelete(book.id)}
+                                            />
+                                        </td>
                                     </tr>
                                 ))
                             }
