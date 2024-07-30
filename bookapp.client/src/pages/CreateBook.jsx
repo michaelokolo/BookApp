@@ -3,10 +3,12 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row'
+import Row from 'react-bootstrap/Row';
+import { useNavigate } from 'react-router-dom';
 
 
 function CreateBook() {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         title: '',
         author: '',
@@ -36,10 +38,12 @@ function CreateBook() {
                 throw new Error(`Server responded with a ${res.status}`);
             }
         const data = await res.json();
+        navigate("/");
         console.log(data);
     };
     return (
         <Container className="mt-5">
+        <h1 className="text-center mb-5">Create Book</h1>
             <Row className="justify-content-md-center">
                 <Col xs={12} md={6}>
                     <Form onSubmit={handleSubmit}>

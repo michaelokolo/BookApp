@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Spinner from '../components/Spinner';
 import { FaTrashAlt } from "react-icons/fa";
 import { TiPencil } from "react-icons/ti";
+import { Link } from "react-router-dom";
 
 
 function Home() {
@@ -72,10 +73,15 @@ function Home() {
                                         <td>{book.price}</td>
                                         <td>{book.yearPublished}</td>
                                         <td className="gap-3">
-                                            <TiPencil
-                                                color={"green"}
-                                                style={{ cursor: 'pointer' }}
-                                            />
+
+                                            <Link to={`/update-book/${book.id}`}>
+                                                <TiPencil
+                                                    color={"green"}
+                                                    style={{ cursor: 'pointer' }}
+                                                />
+
+                                            </Link>
+                                            
                                             <FaTrashAlt
                                                 color={"red"}
                                                 className="ms-3"
