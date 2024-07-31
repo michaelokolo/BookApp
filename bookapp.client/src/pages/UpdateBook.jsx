@@ -8,7 +8,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 function UpdateBook() {
     const params = useParams();
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
+        id:0,
         title: '',
         author: '',
         price: 0,
@@ -25,6 +27,7 @@ function UpdateBook() {
                 return;
             }
             setFormData({
+                id: data.id,
                 title: data.title || '',
                 author: data.author || '',
                 price: data.price || 0,
@@ -48,8 +51,24 @@ function UpdateBook() {
         );
     }
 
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+        const res = await fetch(`/api/books/${formData.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        });
+        if (!res.ok) {
+            return `Server responded with a status code of ${res.status}`
+        }
+        const data = await res.json();
+        navigate("/")
+        console.log(data);
+    }
 
-    console.log(formData);
+    
    
 
   return (
@@ -57,7 +76,7 @@ function UpdateBook() {
           <h1 className="text-center mb-5">Update Book</h1>
           <Row className="justify-content-md-center">
               <Col xs={12} md={6}>
-                  <Form /*onSubmit={handleUpdate}*/>
+                  <Form onSubmit={handleUpdate}>
                       <Form.Group className="mb-3" controlId="title">
                           <Form.Label>Title</Form.Label>
                           <Form.Control
