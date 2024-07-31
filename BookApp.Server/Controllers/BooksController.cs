@@ -60,6 +60,48 @@ namespace BookApp.Server.Controllers
             return NoContent();
         }
 
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateBook(int id, Book book)
+        {
+            if(id != book.Id)
+            {
+                return BadRequest("Book ID Mismatch");
+            }
+            var _book = await _context.Book.FindAsync(id);
+            if(_book == null)
+            {
+                return NotFound();
+            }
+
+            _book.Title = book.Title;
+            _book.Author = book.Author;
+            _book.Description = book.Description;
+            _book.Price = book.Price;
+            _book.YearPublished = book.YearPublished;
+
+            
+            _context.Entry(_book).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_context.Book.Any(e => e.Id == id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+                return Ok(_book);
+
+
+        }
+
     }
 }
 

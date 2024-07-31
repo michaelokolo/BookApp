@@ -4,16 +4,39 @@ import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 function UpdateBook() {
+    const params = useParams();
     const [formData, setFormData] = useState({
         title: '',
         author: '',
         price: 0,
         yearPublished: 0,
-        description:''
+        description: ''
     })
+
+    useEffect(() => {
+        const fetchbook = async () => {
+            const res = await fetch(`/api/books/${params.bookId}`);
+            const data = await res.json();
+            if (data.success === false) {
+                console.log(data.message);
+                return;
+            }
+            setFormData({
+                title: data.title || '',
+                author: data.author || '',
+                price: data.price || 0,
+                yearPublished: data.yearPublished || 0,
+                description: data.description || '',
+            });
+        };
+
+        fetchbook();
+    }, []);
+
+    
 
     const handleChange = (e) => {
         const value = e.target.type == 'number' ? parseFloat(e.target.value) : e.target.value;
@@ -25,20 +48,23 @@ function UpdateBook() {
         );
     }
 
+
     console.log(formData);
+   
 
   return (
       <Container className="mt-5">
           <h1 className="text-center mb-5">Update Book</h1>
           <Row className="justify-content-md-center">
               <Col xs={12} md={6}>
-                  <Form >
+                  <Form /*onSubmit={handleUpdate}*/>
                       <Form.Group className="mb-3" controlId="title">
                           <Form.Label>Title</Form.Label>
                           <Form.Control
                               type="text"
                               placeholder="Title"
                               onChange={handleChange}
+                              value={formData.title}
                           />
                       </Form.Group>
 
@@ -48,7 +74,7 @@ function UpdateBook() {
                               type="text"
                               placeholder="Author"
                               onChange={handleChange}
-                              
+                              value={formData.author}
                           />
                       </Form.Group>
 
@@ -58,7 +84,7 @@ function UpdateBook() {
                               type="number"
                               placeholder="Price"
                               onChange={handleChange}
-                              
+                              value={formData.price}
                           />
                       </Form.Group>
 
@@ -68,6 +94,7 @@ function UpdateBook() {
                               type="number"
                               placeholder="Year"
                               onChange={handleChange}
+                              value={formData.yearPublished}
                           />
                       </Form.Group>
 
@@ -78,10 +105,11 @@ function UpdateBook() {
                               rows={3}
                               placeholder="Enter a brief description of the book"
                               onChange={handleChange}
+                              value={formData.description}
                           />
                       </Form.Group>
                       <Button variant="primary" type="submit">
-                          Submit
+                          Update
                       </Button>
                   </Form>
               </Col>
