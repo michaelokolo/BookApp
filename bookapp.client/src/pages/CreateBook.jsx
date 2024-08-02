@@ -21,6 +21,8 @@ function CreateBook() {
     const [imageFile, setImageFile] = useState(null);
     const [uploading, setUploading] = useState(false);
     const [error, setError] = useState('');
+    const [createBookError, setCreateBookError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
         const value = e.target.type === 'number' ? parseFloat(e.target.value) : e.target.value;
@@ -29,6 +31,8 @@ function CreateBook() {
             [e.target.id]: value,
         });
     };
+
+    console.log(formData);
 
     const handleFileChange = (e) => {
         setImageFile(e.target.files[0]);
@@ -69,6 +73,12 @@ function CreateBook() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!formData.imageUrl) {
+            setCreateBookError('Please upload and image first');
+            return;
+        }
+        try {
+            setLoading(true);
             const res = await fetch('/api/books', {
                 method: 'POST',
                 headers: {
@@ -79,9 +89,15 @@ function CreateBook() {
             if (!res.ok) {
                 throw new Error(`Server responded with a ${res.status}`);
             };
-        const data = await res.json();
-        navigate("/");
-        console.log(data);
+            const data = await res.json();
+            navigate("/");
+            console.log(data);
+        } catch (error) {
+            console.error('Error during fetch', error);
+            setCreateBookError(error.message);
+        } finally {
+            setLoading(false);
+        }
     };
     return (
         <Container className="mt-5">
@@ -154,18 +170,19 @@ function CreateBook() {
                                         variant="outline-success"
                                         className="input-group-append"
                                         onClick={handleImageSubmit}
-                                    >
-                                        {uploading? 'Uploading...':'Upload' }
+                                    >{uploading? 'Uploading...':'Upload' }
                                     </Button>
+                                        
                                 </div>
                                 
                             </Form.Group>
-                            {error && <p>{error.message}</p>}
+                            {error && <p className="text-danger">{error}</p>}
                             {formData.imageUrl && < img className="mt-3" width={100} src={formData.imageUrl} alt='book image'/>}
                         </div>
                         <Button variant="primary" type="submit">
-                            Submit
+                            { loading ? 'Creating...':'Create Book'}
                         </Button>
+                        {createBookError && <p className="text-danger">{createBookError}</p>}
                     </Form>
                 </Col>
 
