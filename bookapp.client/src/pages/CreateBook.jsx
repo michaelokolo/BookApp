@@ -15,7 +15,12 @@ function CreateBook() {
         price: 0,
         description: '',
         yearPublished: 0,
+        imageUrl:'',
     });
+
+    const [imageFile, setImageFile] = useState(null);
+    const [uploading, setUploading] = useState(false);
+    const [error, setError] = useState('');
 
     const handleChange = (e) => {
         const value = e.target.type === 'number' ? parseFloat(e.target.value) : e.target.value;
@@ -24,6 +29,43 @@ function CreateBook() {
             [e.target.id]: value,
         });
     };
+
+    const handleFileChange = (e) => {
+        setImageFile(e.target.files[0]);
+    }
+
+    const handleImageSubmit = async () => {
+        setUploading(true);
+        let imageUrl = '';
+        try {
+            if (imageFile) {
+                const formData = new FormData();
+                formData.append('file', imageFile);
+
+                const res = await fetch('/api/books/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!res.ok) {
+
+                    throw new Error(`Server responsed with a status ${res.status}`);
+                }
+                const data = await res.json();
+                imageUrl = data.url;
+                setFormData((preFormData) => ({
+                    ...preFormData,
+                    imageUrl
+                }));
+                
+            }
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setUploading(false);
+        }
+       
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -36,7 +78,7 @@ function CreateBook() {
             });
             if (!res.ok) {
                 throw new Error(`Server responded with a ${res.status}`);
-            }
+            };
         const data = await res.json();
         navigate("/");
         console.log(data);
@@ -46,7 +88,7 @@ function CreateBook() {
         <h1 className="text-center mb-5">Create Book</h1>
             <Row className="justify-content-md-center">
                 <Col xs={12} md={6}>
-                    <Form onSubmit={handleSubmit}>
+                    <Form onSubmit={handleSubmit} className="mb-5">
                         <Form.Group className="mb-3" controlId="title">
                             <Form.Label>Title</Form.Label>
                             <Form.Control
@@ -97,6 +139,30 @@ function CreateBook() {
                                 onChange={handleChange}
                             />
                         </Form.Group>
+                        <div className="mb-3">
+                            <Form.Group controlId="imageUrl">
+                                <Form.Label>Upload book image (max 200 KB)</Form.Label>
+                                <div className="input-group">
+                                    <Form.Control
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleFileChange}
+                                    />
+                                    <Button
+                                        type="button"
+                                        disabled={uploading}
+                                        variant="outline-success"
+                                        className="input-group-append"
+                                        onClick={handleImageSubmit}
+                                    >
+                                        {uploading? 'Uploading...':'Upload' }
+                                    </Button>
+                                </div>
+                                
+                            </Form.Group>
+                            {error && <p>{error.message}</p>}
+                            {formData.imageUrl && < img className="mt-3" width={100} src={formData.imageUrl} alt='book image'/>}
+                        </div>
                         <Button variant="primary" type="submit">
                             Submit
                         </Button>
