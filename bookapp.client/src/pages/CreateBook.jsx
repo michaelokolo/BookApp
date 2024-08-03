@@ -102,7 +102,7 @@ function CreateBook() {
     return (
         <Container className="mt-5">
         <h1 className="text-center mb-5">Create Book</h1>
-            <Row className="justify-content-md-center">
+            <Row className="justify-content-md-center" style={{ fontSize: '1.2rem' }}>
                 <Col xs={12} md={6}>
                     <Form onSubmit={handleSubmit} className="mb-5">
                         <Form.Group className="mb-3" controlId="title">

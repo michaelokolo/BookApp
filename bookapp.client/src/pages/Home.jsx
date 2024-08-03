@@ -49,17 +49,17 @@ function Home() {
 
     
     return (
-        <main>
-            <HeroSection/>
+        <>
+            <HeroSection />
             {loading &&
                 <div className="container h-100 d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }} >
                     <Spinner />
                 </div>}
-       
+
             {!loading && !error && (
 
                 <div className="container mb-5">
-                    <h3 className="mb-3" style={{fontSize:'1.5rem'} }>My Books({ books && books.length})</h3>
+                    <h3 className="mb-3" style={{ fontSize: '1.5rem' }}>My Books({books && books.length})</h3>
                     <Row xs={1} md={3} className="g-4">
                         {books && books.map(book => (
                             <Col key={book.id}>
@@ -73,11 +73,11 @@ function Home() {
                                     <Card.Body style={{ flex: '1', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }} >
                                         <Card.Title>{book.title}</Card.Title>
                                         <Card.Text>Author: {book.author}</Card.Text>
-                                        <div className="d-flex justify-content-between mt-auto" style={{marginTop:'auto'}}>
+                                        <div className="d-flex justify-content-between mt-auto" style={{ marginTop: 'auto' }}>
                                             <Link to={`/update-book/${book.id}`}>
                                                 <TiPencil
                                                     color={"green"}
-                                                    style={{ cursor: 'pointer', fontSize:'1.5rem'}}
+                                                    style={{ cursor: 'pointer', fontSize: '1.5rem' }}
                                                 />
 
                                             </Link>
@@ -85,7 +85,7 @@ function Home() {
                                             <FaTrashAlt
                                                 color={"red"}
                                                 className="ms-3"
-                                                style={{ cursor: 'pointer', fontSize:'1.5rem'}}
+                                                style={{ cursor: 'pointer', fontSize: '1.5rem' }}
                                                 onClick={() => handleDelete(book.id)}
                                             />
                                         </div>
@@ -93,12 +93,14 @@ function Home() {
 
                                 </Card>
                             </Col>
-                        )) }
+                        ))}
                     </Row>
 
                 </div>
             )}
-        </main>
+
+        </>
+            
   );
 }
 

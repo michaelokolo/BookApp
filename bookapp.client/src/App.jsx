@@ -5,18 +5,25 @@ import CreateBook from './pages/CreateBook';
 import Home from './pages/Home';
 import About from './pages/About';
 import UpdateBook from './pages/UpdateBook';
+import Footer from './components/Footer';
 
 
 function App() {
     return (
         <BrowserRouter>
-            <Header/>
-            <Routes>
-                <Route path="/" element={<Home/>} />
-                <Route path="/create-book" element={<CreateBook />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/update-book/:bookId" element={ <UpdateBook/>} />
-            </Routes>
+            <div style={{ display: 'flex', flexDirection: 'column', minHeight:'100vh' }}>
+                <Header />
+                <main style={{ flex:'1'}}>
+                    <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/create-book" element={<CreateBook />} />
+                        <Route path="/about" element={<About />} />
+                        <Route path="/update-book/:bookId" element={<UpdateBook />} />
+                    </Routes>
+                </main>
+                <Footer />
+            </div>
+            
         </BrowserRouter>
     ); 
 }

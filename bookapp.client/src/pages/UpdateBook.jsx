@@ -74,7 +74,7 @@ function UpdateBook() {
   return (
       <Container className="mt-5">
           <h1 className="text-center mb-5">Update Book</h1>
-          <Row className="justify-content-md-center">
+          <Row className="justify-content-md-center " style={{ fontSize: '1.2rem' }}>
               <Col xs={12} md={6}>
                   <Form onSubmit={handleUpdate}>
                       <Form.Group className="mb-3" controlId="title">
