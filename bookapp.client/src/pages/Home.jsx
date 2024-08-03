@@ -3,6 +3,9 @@ import Spinner from '../components/Spinner';
 import { FaTrashAlt } from "react-icons/fa";
 import { TiPencil } from "react-icons/ti";
 import { Link } from "react-router-dom";
+import Card from 'react-bootstrap/Card';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 
 
 function Home() {
@@ -48,52 +51,45 @@ function Home() {
                 </div>}
        
             {!loading && !error && (
-                <div className="container mt-5">
-                    <h1 className="text-center">Book List</h1>
-                    <table className="table table-hover table-responsive">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Title</th>
-                                <th scope="col">Description</th>
-                                <th scope="col">Author</th>
-                                <th scope="col">Price</th>
-                                <th scope="col">Year Published</th>
-                                <th scope="col">Edit/Delete</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                books && books.map(book => (
-                                    <tr key={book.id}>
-                                        <th scope="row">{book.id}</th>
-                                        <td>{book.title}</td>
-                                        <td>{book.description}</td>
-                                        <td>{book.author}</td>
-                                        <td>{book.price}</td>
-                                        <td>{book.yearPublished}</td>
-                                        <td className="gap-3">
 
+                <div className="container mt-5 mb-5">
+                    <h1 className="mb-3">All Books({ books && books.length})</h1>
+                    <Row xs={1} md={3} className="g-4">
+                        {books && books.map(book => (
+                            <Col key={book.id}>
+                                <Card className="h-100" style={{ display: 'flex', flexDirection: 'column' }}>
+                                    <Card.Img
+                                        variant="top"
+                                        src={book.imageUrl}
+                                        alt="book image"
+                                        style={{ maxHeight: '200px', objectFit: 'cover' }}
+                                    />
+                                    <Card.Body style={{ flex: '1', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }} >
+                                        <Card.Title>{book.title}</Card.Title>
+                                        <Card.Text>Author: {book.author}</Card.Text>
+                                        <div className="d-flex justify-content-between mt-auto" style={{marginTop:'auto'}}>
                                             <Link to={`/update-book/${book.id}`}>
                                                 <TiPencil
                                                     color={"green"}
-                                                    style={{ cursor: 'pointer' }}
+                                                    style={{ cursor: 'pointer', fontSize:'1.5rem'}}
                                                 />
 
                                             </Link>
-                                            
+
                                             <FaTrashAlt
                                                 color={"red"}
                                                 className="ms-3"
-                                                style={{ cursor: 'pointer' }}
+                                                style={{ cursor: 'pointer', fontSize:'1.5rem'}}
                                                 onClick={() => handleDelete(book.id)}
                                             />
-                                        </td>
-                                    </tr>
-                                ))
-                            }
-                        </tbody>
-                    </table>
+                                        </div>
+                                    </Card.Body>
+
+                                </Card>
+                            </Col>
+                        )) }
+                    </Row>
+
                 </div>
             )}
         </main>
