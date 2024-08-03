@@ -13,7 +13,9 @@ function Header() {
     return (
         <Navbar expand="lg" className="bg-body-tertiary">
             <Container fluid>
-                <Navbar.Brand as={Link} to="/"><FcReadingEbook /></Navbar.Brand>
+                <Navbar.Brand as={Link} to="/">
+                    <FcReadingEbook style={{ fontSize: '2.5rem' }} />
+                </Navbar.Brand>
                 <Navbar.Toggle aria-controls="navbarScroll" />
                 <Navbar.Collapse id="navbarScroll">
                     <Nav
@@ -21,9 +23,9 @@ function Header() {
                         style={{ maxHeight: '100px' }}
                         navbarScroll
                     >
-                        <Nav.Link as={ Link } to="/">Home</Nav.Link>
-                        <Nav.Link as={Link} to="/create-book">Create Book</Nav.Link>
-                        <Nav.Link as={Link} to="/about">About</Nav.Link>
+                        <Nav.Link as={Link} to="/" style={{fontSize:'1.2rem'}}>Home</Nav.Link>
+                        <Nav.Link as={Link} to="/create-book" style={{ fontSize: '1.2rem' }}>Create Book</Nav.Link>
+                        <Nav.Link as={Link} to="/about" style={{ fontSize: '1.2rem' }}>About</Nav.Link>
                     </Nav>
                     <Form className="d-flex">
                         <Form.Control
@@ -31,8 +33,9 @@ function Header() {
                             placeholder="Search"
                             className="me-2"
                             aria-label="Search"
+                            style={{ fontSize: '1.2rem' }}
                         />
-                        <Button variant="outline-success">Search</Button>
+                        <Button style={{ fontSize: '1.2rem' }} variant="outline-success">Search</Button>
                     </Form>
                 </Navbar.Collapse>
             </Container>
