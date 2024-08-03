@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
+import HeroSection from "../components/HeroSection";
 
 
 function Home() {
@@ -32,6 +33,10 @@ function Home() {
     }, []);
 
     const handleDelete = async (id) => {
+        const userConfirmed = window.confirm("Are you sure you want to delete this book?");
+        if (!userConfirmed) {
+            return;
+        }
         const res = await fetch(`/api/books/${id}`, {
             method: 'DELETE'
         })
@@ -45,6 +50,7 @@ function Home() {
     
     return (
         <main>
+            <HeroSection/>
             {loading &&
                 <div className="container h-100 d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }} >
                     <Spinner />
@@ -52,8 +58,8 @@ function Home() {
        
             {!loading && !error && (
 
-                <div className="container mt-5 mb-5">
-                    <h1 className="mb-3">All Books({ books && books.length})</h1>
+                <div className="container mb-5">
+                    <h3 className="mb-3" style={{fontSize:'1.5rem'} }>My Books({ books && books.length})</h3>
                     <Row xs={1} md={3} className="g-4">
                         {books && books.map(book => (
                             <Col key={book.id}>
