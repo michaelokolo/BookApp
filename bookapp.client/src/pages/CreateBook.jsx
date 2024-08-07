@@ -90,7 +90,7 @@ function CreateBook() {
                 throw new Error(`Server responded with a ${res.status}`);
             };
             const data = await res.json();
-            navigate("/");
+            navigate(`/book-details/${data.id}`);
             console.log(data);
         } catch (error) {
             console.error('Error during fetch', error);

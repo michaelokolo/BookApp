@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import About from './pages/About';
 import UpdateBook from './pages/UpdateBook';
 import Footer from './components/Footer';
+import BookDetails from './pages/BookDetails';
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
                         <Route path="/create-book" element={<CreateBook />} />
                         <Route path="/about" element={<About />} />
                         <Route path="/update-book/:bookId" element={<UpdateBook />} />
+                        <Route path="/book-details/:bookId" element={<BookDetails /> } />
                     </Routes>
                 </main>
                 <Footer />

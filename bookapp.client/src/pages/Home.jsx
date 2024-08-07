@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Spinner from '../components/Spinner';
 import { FaTrashAlt } from "react-icons/fa";
 import { TiPencil } from "react-icons/ti";
+import { BsInfoCircleFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
@@ -81,6 +82,12 @@ function Home() {
                                                 />
 
                                             </Link>
+                                            <Link to={`/book-details/${book.id}` }>
+                                                <BsInfoCircleFill
+                                                    style={{fontSize:'1.5rem'} }
+                                                />
+                                            </Link>
+                                            
 
                                             <FaTrashAlt
                                                 color={"red"}
@@ -88,6 +95,8 @@ function Home() {
                                                 style={{ cursor: 'pointer', fontSize: '1.5rem' }}
                                                 onClick={() => handleDelete(book.id)}
                                             />
+
+                                            
                                         </div>
                                     </Card.Body>
 
