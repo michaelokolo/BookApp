@@ -6,10 +6,9 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 
 
+
 namespace BookApp.Server.Controllers
 {
-    
-
     [Route("api/[controller]")]
     [ApiController]
     public class BooksController : ControllerBase
@@ -26,6 +25,7 @@ namespace BookApp.Server.Controllers
             _blobServiceClient = blobServiceClient;
             
         }
+
 
         [HttpPost("upload")]
         public async Task<IActionResult> UploadImage(IFormFile file)

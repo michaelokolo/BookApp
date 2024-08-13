@@ -9,6 +9,7 @@ import Footer from './components/Footer';
 import BookDetails from './pages/BookDetails';
 
 
+
 function App() {
     return (
         <BrowserRouter>
@@ -25,7 +26,6 @@ function App() {
                 </main>
                 <Footer />
             </div>
-            
         </BrowserRouter>
     ); 
 }

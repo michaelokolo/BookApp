@@ -1,15 +1,31 @@
 import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
 import { Link } from 'react-router-dom'
-import Navbar from 'react-bootstrap/Navbar';
 import { FcReadingEbook } from "react-icons/fc";
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
+import { Nav, Form, Navbar, Dropdown, DropdownButton, Button } from 'react-bootstrap';
+import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from '@azure/msal-react';
+import { loginRequest } from '../authConfig';
 
 
 
 
 function Header() {
+    const { instance, inProgress } = useMsal();
+    let activeAccount;
+
+    if (instance) {
+        activeAccount = instance.getActiveAccount();
+    }
+
+    const handleLoginPopup = () => {
+        instance.loginPopup({
+            ...loginRequest,
+            redirectUri: 'http://localhost:5173',
+        }).catch((error) => console.log(error));
+    };
+
+    const handleLoginRedirect = () => {
+        instance.loginRedirect(loginRequest).catch((error) => console.log(error));
+    };
     return (
         <Navbar expand="lg" className="bg-body-tertiary">
             <Container fluid>
@@ -37,6 +53,21 @@ function Header() {
                         />
                         <Button style={{ fontSize: '1.2rem' }} variant="outline-success">Search</Button>
                     </Form>
+                    <AuthenticatedTemplate>
+                    <p>I am working</p>
+                    </AuthenticatedTemplate>
+                    <UnauthenticatedTemplate>
+                        <div className="collapse navbar-collapse justify-content-end">
+                            <DropdownButton variant="secondary" className="ml-auto" drop="start" title="Sign In">
+                                <Dropdown.Item as="button" onClick={handleLoginPopup}>
+                                    Sign in using Popup
+                                </Dropdown.Item>
+                                <Dropdown.Item as="button" onClick={handleLoginRedirect}>
+                                    Sign in using Redirect
+                                </Dropdown.Item>
+                            </DropdownButton>
+                        </div>
+                    </UnauthenticatedTemplate>
                 </Navbar.Collapse>
             </Container>
         </Navbar>
