@@ -1,6 +1,11 @@
 import { Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-
+import { SlSocialFacebook } from "react-icons/sl";
+import { VscGithubAlt } from "react-icons/vsc";
+import { LuInstagram } from "react-icons/lu";
+import { FaFigma } from "react-icons/fa";
+import { LuLinkedin } from "react-icons/lu";
+import { SlSocialDribbble } from "react-icons/sl";
 
 
 function Footer() {
@@ -15,23 +20,23 @@ function Footer() {
 
   return (
       <footer style={{
-          backgroundColor: '#343a40',
+          backgroundColor: 'black',
           marginTop: 'auto',
           color: 'white',
-          fontSize:'1.2rem',
+          fontSize:'1rem',
           padding: '20px 0',
           textAlign: 'center',
             }}>
           <Container>
               <Row>
-                  <Col md={4}>
+                  <Col md={3}>
                       <h5>BookApp</h5>
-                      <p>Your favorite book management app.</p>
+                      <p style={{ fontWeight: "lighter" }}>Your favorite book management app.</p>
                   </Col>
-                  <Col md={4}>
+                  <Col md={3}>
                       <h5>Quick Links</h5>
-                      <ul style={{ listStyleType: 'none', padding:0 }}>
-                          <li >
+                      <ul style={{ listStyleType: 'none', padding: 0}}>
+                          <li style={{ fontWeight:"lighter"}}>
                               <Link to='/' style={linkStyle}
                                   onMouseOver={(e) => {
                                       e.target.style.textDecoration = linkStyleHover.textDecoration;
@@ -45,7 +50,7 @@ function Footer() {
                               Home
                               </Link>
                           </li>
-                          <li >
+                          <li style={{ fontWeight: "lighter" }}>
                               <Link to='/about' style={linkStyle}
                                   onMouseOver={(e) =>
                                   {
@@ -60,7 +65,7 @@ function Footer() {
                                   About
                               </Link>
                           </li>
-                          <li >
+                          <li style={{ fontWeight: "lighter" }}>
                               <Link
                                   to='/create-book'
                                   style={linkStyle}
@@ -79,9 +84,9 @@ function Footer() {
 
                       </ul>
                   </Col>
-                  <Col md={4}>
+                  <Col md={3}>
                       <h5>Contact Us</h5>
-                      <p style={{ padding:0, margin:0 } }>Email: {" "}
+                      <p style={{ padding: 0, margin: 0, fontWeight:"lighter"} }>Email: {" "}
                           <a
                               onMouseOver={(e) => {
                                   e.target.style.textDecoration = linkStyleHover.textDecoration;
@@ -96,13 +101,38 @@ function Footer() {
                               michaelokolo62@yahoo.com
                           </a>
                       </p>
-                      <p style={{ padding: 0, margin: 0 }}>Phone: +44 758 779 4304</p>
+                      <p style={{ padding: 0, margin: 0, fontWeight:"lighter"}}>Phone: +44 758 779 4304</p>
 
+                  </Col>
+                  <Col md={3} style={{ color: 'white', padding:'0rem 1rem' }}>
+                      <h5>Follow Us</h5>
+                      <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+                          <Link to='#'>
+                              <SlSocialFacebook />
+                          </Link>
+                          <Link to='https://github.com/michaelokolo'>
+                              <VscGithubAlt />
+                          </Link>
+                          <Link to='#'>
+                              <LuInstagram />
+                          </Link>
+                          <Link to='#'>
+                              <FaFigma />
+                          </Link>
+                          <Link to='https://www.linkedin.com/in/michael-okolo-b24497b2/'>
+                              <LuLinkedin />
+                          </Link>
+                          <Link to='#'>
+                              <SlSocialDribbble />
+                          </Link>
+                          
+                      </div>
+                      
                   </Col>
               </Row>
               <Row className="mt-3">
                   <Col>
-                      <p>&copy; {new Date().getFullYear()} BookApp. All rights reserved.</p>
+                      <p style={{ fontWeight: "lighter" }}>&copy; {new Date().getFullYear()} BookApp. All rights reserved.</p>
                   </Col>
               </Row>
           </Container>
@@ -111,88 +141,3 @@ function Footer() {
 }
 
 export default Footer;
-
-
-/*
-import React from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
-
-const Footer = () => {
-    const footerStyle = {
-        backgroundColor: '#343a40',
-        color: 'white',
-        padding: '20px 0',
-        textAlign: 'center',
-        marginTop: 'auto',
-    };
-
-    const linkStyle = {
-        color: 'white',
-        textDecoration: 'none',
-    };
-
-    const linkHoverStyle = {
-        textDecoration: 'underline',
-    };
-
-    return (
-        <footer style={footerStyle}>
-            <Container>
-                <Row>
-                    <Col md={4}>
-                        <h5>BookApp</h5>
-                        <p>Your favorite book management app.</p>
-                    </Col>
-                    <Col md={4}>
-                        <h5>Quick Links</h5>
-                        <ul style={{ listStyleType: 'none', padding: 0 }}>
-                            <li>
-                                <a
-                                    href="/"
-                                    style={linkStyle}
-                                    onMouseOver={(e) => (e.target.style.textDecoration = linkHoverStyle.textDecoration)}
-                                    onMouseOut={(e) => (e.target.style.textDecoration = linkStyle.textDecoration)}
-                                >
-                                    Home
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    href="/about"
-                                    style={linkStyle}
-                                    onMouseOver={(e) => (e.target.style.textDecoration = linkHoverStyle.textDecoration)}
-                                    onMouseOut={(e) => (e.target.style.textDecoration = linkStyle.textDecoration)}
-                                >
-                                    About
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    href="/contact"
-                                    style={linkStyle}
-                                    onMouseOver={(e) => (e.target.style.textDecoration = linkHoverStyle.textDecoration)}
-                                    onMouseOut={(e) => (e.target.style.textDecoration = linkStyle.textDecoration)}
-                                >
-                                    Contact
-                                </a>
-                            </li>
-                        </ul>
-                    </Col>
-                    <Col md={4}>
-                        <h5>Contact Us</h5>
-                        <p>Email: support@bookapp.com</p>
-                        <p>Phone: +123 456 7890</p>
-                    </Col>
-                </Row>
-                <Row className="mt-3">
-                    <Col>
-                        <p>&copy; {new Date().getFullYear()} BookApp. All rights reserved.</p>
-                    </Col>
-                </Row>
-            </Container>
-        </footer>
-    );
-};
-
-export default Footer;
-*/

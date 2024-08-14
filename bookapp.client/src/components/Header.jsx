@@ -26,8 +26,15 @@ function Header() {
     const handleLoginRedirect = () => {
         instance.loginRedirect(loginRequest).catch((error) => console.log(error));
     };
+
+    const fixedHeader = {
+        zIndex: '1000',
+        top: '0',
+        width: '100%',
+        position: 'fixed'
+    }
     return (
-        <Navbar expand="lg" className="bg-body-tertiary">
+        <Navbar expand="lg" className='bg-white' style={{ borderBottom: '1px solid gray ', ...fixedHeader}}>
             <Container fluid>
                 <Navbar.Brand as={Link} to="/">
                     <FcReadingEbook style={{ fontSize: '2.5rem' }} />
@@ -35,30 +42,23 @@ function Header() {
                 <Navbar.Toggle aria-controls="navbarScroll" />
                 <Navbar.Collapse id="navbarScroll">
                     <Nav
-                        className="me-auto my-2 my-lg-0"
+                        className="ms-auto my-2 my-lg-0"
                         style={{ maxHeight: '100px' }}
                         navbarScroll
                     >
-                        <Nav.Link as={Link} to="/" style={{fontSize:'1.2rem'}}>Home</Nav.Link>
-                        <Nav.Link as={Link} to="/create-book" style={{ fontSize: '1.2rem' }}>Create Book</Nav.Link>
-                        <Nav.Link as={Link} to="/about" style={{ fontSize: '1.2rem' }}>About</Nav.Link>
+                        <Nav.Link as={Link} to="/" style={{ fontSize: '1.1rem', marginRight:'1rem', color:'black' }}>Home</Nav.Link>
+                        <Nav.Link as={Link} to="/about" style={{ fontSize: '1.1rem', marginRight: '1rem', color: 'black' }}>About</Nav.Link>
+                        <Nav.Link as={Link} to="/browse-books" style={{ fontSize: '1.1rem', marginRight: '1rem', color: 'black' }}>Browse</Nav.Link>
+                        <Nav.Link as={Link} to="/" style={{ fontSize: '1.1rem', marginRight: '1rem', color: 'black' }}>Manage</Nav.Link>
+                        
                     </Nav>
-                    <Form className="d-flex">
-                        <Form.Control
-                            type="search"
-                            placeholder="Search"
-                            className="me-2"
-                            aria-label="Search"
-                            style={{ fontSize: '1.2rem' }}
-                        />
-                        <Button style={{ fontSize: '1.2rem' }} variant="outline-success">Search</Button>
-                    </Form>
+
                     <AuthenticatedTemplate>
-                    <p>I am working</p>
+                        <p>I am working</p>
                     </AuthenticatedTemplate>
                     <UnauthenticatedTemplate>
-                        <div className="collapse navbar-collapse justify-content-end">
-                            <DropdownButton variant="secondary" className="ml-auto" drop="start" title="Sign In">
+                        <Nav className="ms-auto">
+                            <DropdownButton variant="warning" className="ml-auto" drop="start" title="Sign In">
                                 <Dropdown.Item as="button" onClick={handleLoginPopup}>
                                     Sign in using Popup
                                 </Dropdown.Item>
@@ -66,8 +66,9 @@ function Header() {
                                     Sign in using Redirect
                                 </Dropdown.Item>
                             </DropdownButton>
-                        </div>
+                        </Nav>
                     </UnauthenticatedTemplate>
+                    
                 </Navbar.Collapse>
             </Container>
         </Navbar>
@@ -76,5 +77,15 @@ function Header() {
 
 export default Header;
 
+
+
+
+
+
+
+
+
+
+   
 
 
