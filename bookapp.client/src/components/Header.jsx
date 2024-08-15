@@ -48,7 +48,6 @@ function Header() {
                     >
                         <Nav.Link as={Link} to="/" style={{ fontSize: '1.1rem', marginRight:'1rem', color:'black' }}>Home</Nav.Link>
                         <Nav.Link as={Link} to="/about" style={{ fontSize: '1.1rem', marginRight: '1rem', color: 'black' }}>About</Nav.Link>
-                        <Nav.Link as={Link} to="/browse-books" style={{ fontSize: '1.1rem', marginRight: '1rem', color: 'black' }}>Browse</Nav.Link>
                         <Nav.Link as={Link} to="/" style={{ fontSize: '1.1rem', marginRight: '1rem', color: 'black' }}>Manage</Nav.Link>
                         
                     </Nav>

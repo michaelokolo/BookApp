@@ -7,7 +7,7 @@ import About from './pages/About';
 import UpdateBook from './pages/UpdateBook';
 import Footer from './components/Footer';
 import BookDetails from './pages/BookDetails';
-import Book from './components/Book'
+import ScrollToTop from './components/ScrollToTop';
 
 
 
@@ -16,14 +16,15 @@ function App() {
         <BrowserRouter>
             <div style={{ display: 'flex', flexDirection: 'column', minHeight:'100vh' }}>
                 <Header />
-                <main style={{ flex:'1', paddingTop:'56px'}}>
+                <main style={{ flex: '1', paddingTop: '56px' }}>
+                    <ScrollToTop />
                     <Routes>
+                        
                         <Route path="/" element={<Home />} />
                         <Route path="/create-book" element={<CreateBook />} />
                         <Route path="/about" element={<About />} />
                         <Route path="/update-book/:bookId" element={<UpdateBook />} />
                         <Route path="/book-details/:bookId" element={<BookDetails />} />
-                        <Route path="/browse-books" element={ <Book/>} />
                     </Routes>
                 </main>
                 <Footer />
