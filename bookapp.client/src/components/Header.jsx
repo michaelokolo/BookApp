@@ -1,15 +1,12 @@
 import Container from 'react-bootstrap/Container';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 import { FcReadingEbook } from "react-icons/fc";
-import { Nav, Form, Navbar, Dropdown, DropdownButton, Button } from 'react-bootstrap';
+import { Nav, Navbar, Dropdown, DropdownButton } from 'react-bootstrap';
 import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from '@azure/msal-react';
 import { loginRequest } from '../authConfig';
 
-
-
-
 function Header() {
-    const { instance, inProgress } = useMsal();
+    const { instance } = useMsal();
     let activeAccount;
 
     if (instance) {
@@ -31,29 +28,64 @@ function Header() {
         zIndex: '1000',
         top: '0',
         width: '100%',
-        position: 'fixed'
-    }
+        position: 'fixed',
+        borderBottom: '1px solid gray',
+        backgroundColor: 'white',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+    };
+
+    const navLinkStyle = {
+        fontSize: '1.1rem',
+        marginRight: '1rem',
+        color: 'black',
+        transition: 'color 0.3s'
+    };
+
+    const navLinkHoverStyle = {
+        color: '#007bff' 
+    };
+
     return (
-        <Navbar expand="lg" className='bg-white' style={{ borderBottom: '1px solid gray ', ...fixedHeader}}>
+        <Navbar expand="lg" style={fixedHeader}>
             <Container fluid>
-                <Navbar.Brand as={Link} to="/">
+                <Navbar.Brand as={Link} to="/" className="d-flex align-items-center">
                     <FcReadingEbook style={{ fontSize: '2.5rem' }} />
+                    <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'black', marginLeft: '0.5rem' }}>BookApp</span>
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="navbarScroll" />
                 <Navbar.Collapse id="navbarScroll">
-                    <Nav
-                        className="ms-auto my-2 my-lg-0"
-                        style={{ maxHeight: '100px' }}
-                        navbarScroll
-                    >
-                        <Nav.Link as={Link} to="/" style={{ fontSize: '1.1rem', marginRight:'1rem', color:'black' }}>Home</Nav.Link>
-                        <Nav.Link as={Link} to="/about" style={{ fontSize: '1.1rem', marginRight: '1rem', color: 'black' }}>About</Nav.Link>
-                        <Nav.Link as={Link} to="/" style={{ fontSize: '1.1rem', marginRight: '1rem', color: 'black' }}>Manage</Nav.Link>
-                        
+                    <Nav className="ms-auto my-2 my-lg-0" navbarScroll>
+                        <Nav.Link
+                            as={Link}
+                            to="/"
+                            style={navLinkStyle}
+                            onMouseOver={(e) => Object.assign(e.target.style, navLinkHoverStyle)}
+                            onMouseOut={(e) => Object.assign(e.target.style, navLinkStyle)}
+                        >
+                            Home
+                        </Nav.Link>
+                        <Nav.Link
+                            as={Link}
+                            to="/about"
+                            style={navLinkStyle}
+                            onMouseOver={(e) => Object.assign(e.target.style, navLinkHoverStyle)}
+                            onMouseOut={(e) => Object.assign(e.target.style, navLinkStyle)}
+                        >
+                            About
+                        </Nav.Link>
+                        <Nav.Link
+                            as={Link}
+                            to="/manage"
+                            style={navLinkStyle}
+                            onMouseOver={(e) => Object.assign(e.target.style, navLinkHoverStyle)}
+                            onMouseOut={(e) => Object.assign(e.target.style, navLinkStyle)}
+                        >
+                            Manage
+                        </Nav.Link>
                     </Nav>
 
                     <AuthenticatedTemplate>
-                        <p>I am working</p>
+                        <p className="mb-0">Welcome, {activeAccount?.name}</p>
                     </AuthenticatedTemplate>
                     <UnauthenticatedTemplate>
                         <Nav className="ms-auto">
@@ -67,24 +99,10 @@ function Header() {
                             </DropdownButton>
                         </Nav>
                     </UnauthenticatedTemplate>
-                    
                 </Navbar.Collapse>
             </Container>
         </Navbar>
-  );
+    );
 }
 
 export default Header;
-
-
-
-
-
-
-
-
-
-
-   
-
-
