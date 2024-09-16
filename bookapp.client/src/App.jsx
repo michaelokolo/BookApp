@@ -8,7 +8,7 @@ import UpdateBook from './pages/UpdateBook';
 import Footer from './components/Footer';
 import BookDetails from './pages/BookDetails';
 import ScrollToTop from './components/ScrollToTop';
-
+import Search from './pages/Search';
 
 
 function App() {
@@ -25,6 +25,7 @@ function App() {
                         <Route path="/about" element={<About />} />
                         <Route path="/update-book/:bookId" element={<UpdateBook />} />
                         <Route path="/book-details/:bookId" element={<BookDetails />} />
+                        <Route path="/search" element={ <Search/>} />
                     </Routes>
                 </main>
                 <Footer />
