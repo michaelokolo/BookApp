@@ -7,6 +7,7 @@ function Search() {
     const navigate = useNavigate();
     const [sidebarStyle, setSidebarStyle] = useState({});
     const [searchTerm, setSearchTerm] = useState('');
+    const [book, setBook] = useState([])
 
 
 
@@ -39,6 +40,23 @@ function Search() {
         const searchQuery = urlParams.toString();
         navigate(`/search?${searchQuery}`)
     };
+    useEffect(() => {
+        const urlParams = new URLSearchParams(location.search)
+        const searchTermFromUrl = urlParams.get('searchTerm');
+        if (searchTermFromUrl) {
+            setSearchTerm(searchTermFromUrl);
+        }
+
+        const fetchBooks = async () => {
+            const res = await fetch(`/api/Books/search/${searchTermFromUrl}`);
+            const data = await res.json();
+            setBook(data)
+            
+        };
+        fetchBooks();
+        console.log(book);
+    }, [location.search]);
+
 
     console.log(searchTerm);
 

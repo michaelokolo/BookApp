@@ -84,6 +84,31 @@ namespace BookApp.Server.Controllers
             return book;
         }
 
+        [HttpGet("search/{searchQuery}")]
+        public async Task<IActionResult> SearchBook(string searchQuery)
+        {
+            if (_context.Book == null)
+            {
+                return Problem("Entity set 'Book' is null.");
+            }
+
+            var books = from m in _context.Book
+                        select m;
+            if (!String.IsNullOrEmpty(searchQuery))
+            {
+                books = books.Where(s =>
+                (s.Title != null && s.Title.ToUpper().Contains(searchQuery.ToUpper())) ||
+                (s.Author != null && s.Author.ToUpper().Contains(searchQuery.ToUpper())) ||
+                (s.Description != null && s.Description.ToUpper().Contains(searchQuery.ToUpper()))
+                );
+            }
+
+            var result = await books.ToListAsync();
+
+            return Ok(result);
+        }
+
+
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteBook(int id)
         {
