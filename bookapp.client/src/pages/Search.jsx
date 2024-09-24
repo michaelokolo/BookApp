@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Form, FormControl, Button, Container, Row, Col } from 'react-bootstrap';
+import { Form, FormControl, Button, Container, Row, Col, Alert } from 'react-bootstrap';
+import { GoQuestion } from "react-icons/go";
 
 function Search() {
     const [sidebarStyle, setSidebarStyle] = useState({});
@@ -48,11 +49,22 @@ function Search() {
                         </Button>
                     </Form>
                 </Col>
-                <Col md={8} className="p-4 flex-grow-1">
-                    <h1>
-                        Book Results:
-                    </h1>
-                    <p>No results found.</p>
+                <Col md={8} className="p-0 pt-md-4 pt-0 flex-grow-1 ">
+                    <div className="border-bottom">
+                        <h2 className="p-2">
+                            Book Results:
+                        </h2>
+                    </div>
+                    <div className="p-4">
+                        <Alert variant="light" className="d-flex align-items-center">
+                            <div className="d-flex align-items-center g-2">
+                                <GoQuestion/>
+                                <p className="m-0">No matches found. Try refining your search for better results.</p>
+                            </div>
+                            
+                        </Alert>
+                    </div>
+                    
                 </Col>
             </Row>
         </Container>
