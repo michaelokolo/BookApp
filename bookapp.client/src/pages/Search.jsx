@@ -1,9 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import { Form, FormControl, Button, Container, Row, Col, Alert } from 'react-bootstrap';
 import { GoQuestion } from "react-icons/go";
 
 function Search() {
+    const navigate = useNavigate();
     const [sidebarStyle, setSidebarStyle] = useState({});
+    const [searchTerm, setSearchTerm] = useState('');
+
+
+
 
     useEffect(() => {
         const updateSidebarStyle = () => {
@@ -22,6 +28,20 @@ function Search() {
         };
     }, []);
 
+    const handleChange = (e) => {
+        setSearchTerm(e.target.value)
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const urlParams = new URLSearchParams();
+        urlParams.set('searchTerm', searchTerm);
+        const searchQuery = urlParams.toString();
+        navigate(`/search?${searchQuery}`)
+    };
+
+    console.log(searchTerm);
+
     return (
         <Container fluid>
             <Row className="flex-md-row flex-column min-vh-100">
@@ -30,7 +50,7 @@ function Search() {
                     className="bg-light p-4 d-flex flex-column"
                     style={sidebarStyle}
                 >
-                    <Form className="d-flex flex-column" style={{ gap: '1rem' }}>
+                    <Form onSubmit={handleSubmit} className="d-flex flex-column" style={{ gap: '1rem' }}>
                         <Form.Group as={Row} className="align-items-center">
                             <Form.Label column xs="auto" style={{ whiteSpace: 'nowrap', fontWeight: 'bold' }}>
                                 Search Term:
@@ -41,6 +61,8 @@ function Search() {
                                     placeholder="Search for books..."
                                     aria-label="Search"
                                     style={{ padding: '0.8rem' }}
+                                    value={searchTerm}
+                                    onChange={handleChange}
                                 />
                             </Col>
                         </Form.Group>
