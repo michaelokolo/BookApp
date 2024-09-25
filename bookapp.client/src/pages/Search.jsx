@@ -1,14 +1,16 @@
 import React, { useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
-import { Form, FormControl, Button, Container, Row, Col, Alert } from 'react-bootstrap';
+import { Form, FormControl, Button, Container, Row, Col, Alert, Stack} from 'react-bootstrap';
 import { GoQuestion } from "react-icons/go";
+import BookCard from '../components/BookCard';
+import Spinner from '../components/Spinner';
 
 function Search() {
     const navigate = useNavigate();
     const [sidebarStyle, setSidebarStyle] = useState({});
     const [searchTerm, setSearchTerm] = useState('');
     const [book, setBook] = useState([])
-
+    const [loading, setLoading] = useState(false);
 
 
 
@@ -48,9 +50,11 @@ function Search() {
         }
 
         const fetchBooks = async () => {
+            setLoading(true);
             const res = await fetch(`/api/Books/search/${searchTermFromUrl}`);
             const data = await res.json();
-            setBook(data)
+            setBook(data);
+            setLoading(false);
             
         };
         fetchBooks();
@@ -90,21 +94,39 @@ function Search() {
                     </Form>
                 </Col>
                 <Col md={8} className="p-0 pt-md-4 pt-0 flex-grow-1 ">
-                    <div className="border-bottom">
-                        <h2 className="p-2">
-                            Book Results:
-                        </h2>
-                    </div>
-                    <div className="p-4">
-                        <Alert variant="light" className="d-flex align-items-center">
-                            <div className="d-flex align-items-center g-2">
-                                <GoQuestion/>
-                                <p className="m-0">No matches found. Try refining your search for better results.</p>
+                    <Stack>
+                        <div className="border-bottom">
+                            <h2 className="p-2">
+                                Book Results:
+                            </h2>
+                        </div>
+                        {loading &&
+                            <div className="container h-100 d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }} >
+                                <Spinner />
+                            </div>}
+                        
+                        {!loading && book.length === 0 &&
+                            <div className="p-4 w-100">
+                                <Alert variant="light" className="d-flex align-items-center">
+                                    <div className="d-flex align-items-center g-2">
+                                        <GoQuestion />
+                                        <p className="m-0">No matches found. Try refining your search for better results.</p>
+                                    </div>
+
+                                </Alert>
                             </div>
-                            
-                        </Alert>
-                    </div>
-                    
+                        }
+                        {!loading && book.length !== 0 && (
+                            <Row className="d-flex flex-wrap justify-content-start">
+                               
+                                    {book.map(b => (
+                                        <BookCard key={b.id} book={b} />
+                                    ))}
+                                
+                                
+                            </Row>
+                        )}
+                    </Stack>
                 </Col>
             </Row>
         </Container>
