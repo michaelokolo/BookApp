@@ -68,15 +68,13 @@ function Search() {
         <Container fluid>
             <Row className="flex-md-row flex-column min-vh-100">
                 <Col
-                    md={4}
+                    md={3}
                     className="bg-light p-4 d-flex flex-column"
                     style={sidebarStyle}
                 >
                     <Form onSubmit={handleSubmit} className="d-flex flex-column" style={{ gap: '1rem' }}>
                         <Form.Group as={Row} className="align-items-center">
-                            <Form.Label column xs="auto" style={{ whiteSpace: 'nowrap', fontWeight: 'bold' }}>
-                                Search Term:
-                            </Form.Label>
+                            
                             <Col>
                                 <FormControl
                                     type="search"
@@ -93,7 +91,7 @@ function Search() {
                         </Button>
                     </Form>
                 </Col>
-                <Col md={8} className="p-0 pt-md-4 pt-0 flex-grow-1 ">
+                <Col md={9} className="p-0 pt-md-4 pt-0 flex-grow-1 ">
                     <Stack>
                         <div className="border-bottom">
                             <h2 className="p-2">
@@ -117,7 +115,7 @@ function Search() {
                             </div>
                         }
                         {!loading && book.length !== 0 && (
-                            <Row className="d-flex flex-wrap justify-content-start">
+                            <Row className="d-flex flex-wrap justify-content-start g-4 m-3">
                                
                                     {book.map(b => (
                                         <BookCard key={b.id} book={b} />

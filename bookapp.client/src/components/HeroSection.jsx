@@ -1,11 +1,25 @@
 import { Container, Button, Form, FormControl, Row, Col } from 'react-bootstrap';
 import Carousel from 'react-bootstrap/Carousel';
-import { Link } from 'react-router-dom';
 import picture1 from '../assets/images/picture1.jpg';
 import picture2 from '../assets/images/picture2.jpg';
 import picture3 from '../assets/images/picture3.jpg';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function HeroSection() {
+    const navigate = useNavigate();
+    const [searchTerm, setSearchTerm] = useState("");
+    const handleChange = (e) => {
+        setSearchTerm(e.target.value);
+    };
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const urlParams = new URLSearchParams;
+        urlParams.set('searchTerm', searchTerm);
+        const searchQuery = urlParams.toString();
+        navigate(`/search?${searchQuery}`);
+    }
+    console.log(searchTerm);
     return (
         <div className="text-center  py-5">
             <Container>
@@ -20,15 +34,16 @@ function HeroSection() {
                 
                 <Row className='d-flex justify-content-center'>
                     <Col xs={12} md={8} lg={6}>
-                        <Form className="d-flex justify-content-center mt-4">
+                        <Form onSubmit={handleSubmit} className="d-flex justify-content-center mt-4">
                             <FormControl
                                 type="search"
                                 placeholder="Search for books..."
                                 className="mr-2"
                                 aria-label="Search"
-                                style={{padding:'0.8rem'} }
+                                style={{ padding: '0.8rem' }}
+                                onChange={handleChange}
                             />
-                            <Button variant="warning" style={{padding:'0rem 1rem'}} className="ms-3">Search</Button>
+                            <Button variant="warning" type="submit" style={{padding:'0rem 1rem'}} className="ms-3">Search</Button>
                         </Form>
                     </Col>
                 </Row>
