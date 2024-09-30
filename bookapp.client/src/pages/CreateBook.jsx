@@ -96,7 +96,7 @@ function CreateBook() {
     };
 
     return (
-        <Container className="mt-5">
+        <Container className="mt-5 mb-5">
             <h1 className="text-center mb-5">Create Book</h1>
             <Row className="justify-content-md-center">
                 <Col xs={12} md={8} lg={6}>
@@ -196,7 +196,7 @@ function CreateBook() {
                                     )}
                                 </Form.Group>
 
-                                <Button variant="primary" type="submit" className="w-100">
+                                <Button variant="warning" type="submit" className="w-100" style={{ padding: '0.8rem 1rem' }}>
                                     {loading ? (
                                         <>
                                             <Spinner
