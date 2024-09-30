@@ -1,5 +1,6 @@
 import { Table,Button } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function DashBooks() {
     const [books, setBooks] = useState(null);
@@ -34,14 +35,29 @@ function DashBooks() {
                   </tr>
               </thead>
               <tbody>
-                  {books && books.map(book => (
-                      <tr>
-                          <td>1</td>
-                          <td><img src={book.imageUrl} style={{width: "100px", height: "100px"}} /></td>
-                          <td>{book.title}</td>
+                  {books && books.map((book, index) => (
+                      <tr key={book.id}>
+                          <td>{index + 1}</td>
+                          <td>
+                              <Link to={`/book-details/${book.id}` }>
+                                  <img src={book.imageUrl} style={{ width: "100px", height: "100px" }} alt={book.title} />
+                              </Link>
+                              
+                          </td>
+                          <td>
+                              <Link to={`/book-details/${book.id}`}>
+                                  {book.title}
+                              </Link>
+                              
+                          </td>
                           <td>{book.author}</td>
-                          <Button variant="danger">Delete</Button>
-                          <Button variant="warning">Edit</Button>
+                          <td>
+                              <Button  variant="danger" className="me-2">Delete</Button>
+                          </td>
+                          <td>
+                              <Button as={Link} to={`/update-book/${book.id}`} variant="warning">Edit</Button>
+                          </td>
+                          
                       </tr>
                   ))}
                   
@@ -52,3 +68,6 @@ function DashBooks() {
 }
 
 export default DashBooks;
+
+
+

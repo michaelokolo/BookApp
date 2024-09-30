@@ -123,7 +123,7 @@ function UpdateBook() {
                                         value={formData.description}
                                     />
                                 </Form.Group>
-                                <Button variant="primary" type="submit" className="w-100">
+                                <Button type="submit" className="w-100" variant="warning"  style={{ padding: '0.8rem 1rem' }}>
                                     Update
                                 </Button>
                             </Form>
