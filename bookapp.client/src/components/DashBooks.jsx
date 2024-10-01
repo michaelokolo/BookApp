@@ -1,9 +1,14 @@
 import { Table,Button } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import DeleteModal from '../components/DeleteModal';
+
 
 function DashBooks() {
     const [books, setBooks] = useState(null);
+    const [modalShow, setModalShow] = useState(false);
+    const [selectedBook, setSelectedBook] = useState(null);
+    
 
     useEffect(() => {
         const fetchbooks = async () => {
@@ -19,7 +24,19 @@ function DashBooks() {
         fetchbooks();
 
     }, []);
-    console.log(books);
+
+    const handleDelete = async () => {
+        try {
+            await fetch(`/api/books/${selectedBook.id}`, { method: 'DELETE' });
+            setBooks(books.filter(book => book.id !== selectedBook.id));
+            setModalShow(false);
+        } catch (error) {
+            console.error("Error deleting book", error);
+        }
+        
+
+    }
+
   return (
       <div>
           <h2>Manage Books:</h2>
@@ -52,7 +69,7 @@ function DashBooks() {
                           </td>
                           <td>{book.author}</td>
                           <td>
-                              <Button  variant="danger" className="me-2">Delete</Button>
+                              <Button variant="danger" className="me-2" onClick={() => { setSelectedBook(book); setModalShow(true) }}>Delete</Button>
                           </td>
                           <td>
                               <Button as={Link} to={`/update-book/${book.id}`} variant="warning">Edit</Button>
@@ -63,11 +80,16 @@ function DashBooks() {
                   
               </tbody>
           </Table>
+          {selectedBook && (
+              <DeleteModal
+                  show={modalShow}
+                  handleClose={() => setModalShow(false)}
+                  handleDelete={handleDelete}
+                  bookTitle={selectedBook.title}
+              />
+          )}
       </div>
   );
 }
 
 export default DashBooks;
-
-
-
