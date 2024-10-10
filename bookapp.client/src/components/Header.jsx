@@ -6,23 +6,29 @@ import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from '@azure/
 import { loginRequest } from '../authConfig';
 
 function Header() {
-    const { instance } = useMsal();
-    let activeAccount;
-
-    if (instance) {
-        activeAccount = instance.getActiveAccount();
-    }
+    const { instance, accounts } = useMsal();
+   
 
     const handleLoginPopup = () => {
         instance.loginPopup({
             ...loginRequest,
-            redirectUri: 'http://localhost:5173',
+            redirectUri: '/',
         }).catch((error) => console.log(error));
     };
 
     const handleLoginRedirect = () => {
         instance.loginRedirect(loginRequest).catch((error) => console.log(error));
     };
+
+    const handleLogoutRedirect = () => {
+        instance.logoutRedirect();
+    };
+
+    const handleLogoutPopup = () => {
+        instance.logoutPopup({
+            mainWindowRedirectUri:'/',
+        });
+    }
 
     const fixedHeader = {
         zIndex: '1000',
@@ -42,7 +48,7 @@ function Header() {
     };
 
     const navLinkHoverStyle = {
-        color: '#007bff' 
+        color: '#007bff'
     };
 
     return (
@@ -85,7 +91,22 @@ function Header() {
                     </Nav>
 
                     <AuthenticatedTemplate>
-                        <p className="mb-0">Welcome, {activeAccount?.name}</p>
+                        <Nav className="ms-auto">
+                            <DropdownButton
+                                variant="warning"
+                                drop="start"
+                                className="ml-auto"
+                                title={`Hello, ${accounts[0]?.name}`}
+                            >
+                                <Dropdown.Item as="button" onClick={handleLogoutPopup }>
+                                    Sign out using Popup
+                                </Dropdown.Item>
+                                <Dropdown.Item as="button" onClick={handleLogoutRedirect}>
+                                    Sign out using Redirect
+                                </Dropdown.Item>
+                            </DropdownButton>
+                        </Nav>
+                        
                     </AuthenticatedTemplate>
                     <UnauthenticatedTemplate>
                         <Nav className="ms-auto">

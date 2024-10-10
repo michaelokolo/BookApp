@@ -16,13 +16,13 @@ export const b2cPolicies = {
 export const msalConfig = {
     auth: {
         clientId: 'bccee812-4295-46cc-afaa-d5df51b07943',
-        authority: b2cPolicies.authorities.signUpSignIn.authority, 
-        knownAuthorities: [b2cPolicies.authorityDomain], 
-        redirectUri: 'http://localhost:5173', 
+        authority: b2cPolicies.authorities.signUpSignIn.authority,
+        knownAuthorities: [b2cPolicies.authorityDomain],
+        redirectUri: '/',
     },
     cache: {
-        cacheLocation: 'sessionStorage', 
-        storeAuthStateInCookie: false, 
+        cacheLocation: 'sessionStorage',
+        storeAuthStateInCookie: false,
     },
     system: {
         loggerOptions: {
