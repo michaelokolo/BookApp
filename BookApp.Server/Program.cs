@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using BookApp.Server.Data;
 using Microsoft.Extensions.Azure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Identity.Web;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +25,19 @@ builder.Services.AddAzureClients(azureBuilder =>
     azureBuilder.AddBlobServiceClient(builder.Configuration.GetConnectionString("BookAppStorage"));
 });
 
+// Configure API Authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAdB2C"));
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("ReadPolicy", policy =>
+        policy.RequireClaim("scp", "books.read"));
+    options.AddPolicy("WritePolicy", policy =>
+        policy.RequireClaim("scp", "books.write"));
+});
+
+
+
 var app = builder.Build();
 
 app.UseDefaultFiles();
@@ -35,7 +51,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.MapFallbackToFile("/index.html");
 app.Run();
+
+
+
+

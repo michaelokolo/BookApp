@@ -79,15 +79,18 @@ function Header() {
                         >
                             About
                         </Nav.Link>
-                        <Nav.Link
-                            as={Link}
-                            to="/manage"
-                            style={navLinkStyle}
-                            onMouseOver={(e) => Object.assign(e.target.style, navLinkHoverStyle)}
-                            onMouseOut={(e) => Object.assign(e.target.style, navLinkStyle)}
-                        >
-                            Manage
-                        </Nav.Link>
+                        <AuthenticatedTemplate>
+                            <Nav.Link
+                                as={Link}
+                                to="/manage"
+                                style={navLinkStyle}
+                                onMouseOver={(e) => Object.assign(e.target.style, navLinkHoverStyle)}
+                                onMouseOut={(e) => Object.assign(e.target.style, navLinkStyle)}
+                            >
+                                Manage
+                            </Nav.Link>
+                        </AuthenticatedTemplate>
+                        
                     </Nav>
 
                     <AuthenticatedTemplate>

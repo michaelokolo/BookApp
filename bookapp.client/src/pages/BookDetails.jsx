@@ -8,6 +8,7 @@ import Card from 'react-bootstrap/Card';
 import { Link } from 'react-router-dom';
 import Community from '../components/Community';
 import Promo from '../components/Promo';
+import { AuthenticatedTemplate } from '@azure/msal-react';
 
 function BookDetails() {
     const [book, setBook] = useState({
@@ -80,9 +81,12 @@ function BookDetails() {
                                             <Button as={Link} to={'/'} variant='primary'>
                                                 Home
                                             </Button>
-                                            <Button as={Link} to={`/update-book/${book.id}`} variant='success'>
-                                                Edit details
-                                            </Button>
+                                            <AuthenticatedTemplate>
+                                                <Button as={Link} to={`/update-book/${book.id}`} variant='success'>
+                                                    Edit details
+                                                </Button>
+                                            </AuthenticatedTemplate>
+                                           
                                         </div>
                                     </Card.Body>
                                 </Col>

@@ -4,6 +4,8 @@ using BookApp.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Microsoft.AspNetCore.Authorization;
+
 
 
 
@@ -11,9 +13,11 @@ namespace BookApp.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class BooksController : ControllerBase
     {
-        string loggedInUser = "matt"; // the name matt will eventually be replaced by the logged in user
+        
+
 
         private readonly BookContext _context;
 
@@ -26,7 +30,7 @@ namespace BookApp.Server.Controllers
             
         }
 
-
+        [Authorize(Policy = "WritePolicy")]
         [HttpPost("upload")]
         public async Task<IActionResult> UploadImage(IFormFile file)
         {
@@ -40,7 +44,13 @@ namespace BookApp.Server.Controllers
                 return BadRequest("File size exceeds the maximum allowed size of 200 KB.");
             }
 
-            var containerClient = _blobServiceClient.GetBlobContainerClient(loggedInUser);
+            var userName = User.Identity?.Name;
+            if (string.IsNullOrEmpty(userName))
+            {
+                return BadRequest("User identity is not available.");
+            }
+
+            var containerClient = _blobServiceClient.GetBlobContainerClient(userName);
             await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob);
 
             var blobClient = containerClient.GetBlobClient(file.FileName);
@@ -56,6 +66,7 @@ namespace BookApp.Server.Controllers
 
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetBooks()
         {
@@ -63,7 +74,7 @@ namespace BookApp.Server.Controllers
             return Ok(books);
         }
 
-
+        [Authorize(Policy = "WritePolicy")]
         [HttpPost]
         public async Task<ActionResult<Book>> CreateBook(Book book)
         {
@@ -72,6 +83,8 @@ namespace BookApp.Server.Controllers
 
             return CreatedAtAction(nameof(GetBook), new { id = book.Id }, book);
         }
+
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<Book>> GetBook(int id)
         {
@@ -84,6 +97,7 @@ namespace BookApp.Server.Controllers
             return book;
         }
 
+        [Authorize(Policy = "ReadPolicy")]
         [HttpGet("search/{searchQuery}")]
         public async Task<IActionResult> SearchBook(string searchQuery)
         {
@@ -108,7 +122,7 @@ namespace BookApp.Server.Controllers
             return Ok(result);
         }
 
-
+        [Authorize(Policy = "WritePolicy")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteBook(int id)
         {
@@ -122,6 +136,7 @@ namespace BookApp.Server.Controllers
             return NoContent();
         }
 
+        [Authorize(Policy = "WritePolicy")]
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateBook(int id, Book book)
         {
