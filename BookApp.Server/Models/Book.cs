@@ -27,5 +27,7 @@ namespace BookApp.Server.Models
         public string? Description { get; set; }
 
         public int YearPublished { get; set; }
+
+        public string? UserId { get; set; }
     }
 }

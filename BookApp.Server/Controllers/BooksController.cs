@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 
 
@@ -16,18 +17,26 @@ namespace BookApp.Server.Controllers
     [Authorize]
     public class BooksController : ControllerBase
     {
-        
 
+       
 
         private readonly BookContext _context;
 
         private readonly BlobServiceClient _blobServiceClient;
 
+        private readonly string _currentPrincipalId;
+
         public BooksController(BookContext context, BlobServiceClient blobServiceClient)
         {
             _context = context;
             _blobServiceClient = blobServiceClient;
+            _currentPrincipalId = GetCurrentClaimsPrincipal()?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
             
+        }
+
+        private ClaimsPrincipal GetCurrentClaimsPrincipal()
+        {
+            return User;
         }
 
         [Authorize(Policy = "WritePolicy")]
@@ -78,6 +87,7 @@ namespace BookApp.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<Book>> CreateBook(Book book)
         {
+            book.UserId = _currentPrincipalId; //Set the UserId to the current user's
             _context.Book.Add(book);
             await _context.SaveChangesAsync();
 
@@ -97,7 +107,7 @@ namespace BookApp.Server.Controllers
             return book;
         }
 
-        [Authorize(Policy = "ReadPolicy")]
+        [AllowAnonymous]
         [HttpGet("search/{searchQuery}")]
         public async Task<IActionResult> SearchBook(string searchQuery)
         {
@@ -131,6 +141,11 @@ namespace BookApp.Server.Controllers
             {
                 return NotFound();
             }
+
+            if(book.UserId != _currentPrincipalId)
+            {
+                return Forbid("You are not authorized to delete this book.");
+            }
             _context.Book.Remove(book);
             await _context.SaveChangesAsync();
             return NoContent();
@@ -148,6 +163,11 @@ namespace BookApp.Server.Controllers
             if(_book == null)
             {
                 return NotFound();
+            }
+
+            if (_book.UserId != _currentPrincipalId)
+            {
+                return Forbid("You are not authorized to update this book.");
             }
 
             _book.Title = book.Title;
@@ -179,7 +199,55 @@ namespace BookApp.Server.Controllers
 
         }
 
+
+
+        [Authorize(Policy = "ReadPolicy")]
+        [HttpGet]
+        public async Task<IActionResult> GetBooks([FromQuery] string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User ID is required.");
+            }
+
+            if (userId != _currentPrincipalId)
+            {
+                return Forbid("You are not authorized to view these books.");
+            }
+
+            var books = await _context.Book.Where(b => b.UserId == userId).ToListAsync();
+            return Ok(books);
+        }
+
+
+
+
+
+
+
+        
+
+        //userinfo
+        [HttpGet("userinfo")]
+        public IActionResult GetUserInfo()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userName = User.Identity?.Name;
+            var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
+
+            return Ok(new
+            {
+                UserId = userId,
+                UserName = userName,
+                UserEmail = userEmail
+            });
+        }
+
+
+
     }
 }
+
+
 
 
