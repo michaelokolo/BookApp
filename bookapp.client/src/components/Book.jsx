@@ -25,20 +25,7 @@ function Book() {
         fetchbooks();
     }, []);
 
-    /*const handleDelete = async (id) => {
-        const userConfirmed = window.confirm("Are you sure you want to delete this book?");
-        if (!userConfirmed) {
-            return;
-        }
-        const res = await fetch(`/api/books/${id}`, {
-            method: 'DELETE'
-        });
-        if (!res.ok) {
-            console.log(`Could not delete book with id: ${id}`);
-            throw new Error(`Could not delete book with id: ${id}`);
-        }
-        setBooks(prevBooks => prevBooks.filter(book => book.id !== id));
-    };*/
+    
 
     const headerStyle = {
         color: '#343a40',

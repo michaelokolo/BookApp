@@ -7,9 +7,13 @@ import Row from 'react-bootstrap/Row';
 import Card from 'react-bootstrap/Card';
 import Spinner from 'react-bootstrap/Spinner';
 import { useNavigate } from 'react-router-dom';
+import { useMsal } from "@azure/msal-react";
+import { protectedResources } from "../authConfig";
 
 function CreateBook() {
     const navigate = useNavigate();
+    const { instance, accounts } = useMsal();
+
     const [formData, setFormData] = useState({
         title: '',
         author: '',
@@ -18,7 +22,7 @@ function CreateBook() {
         yearPublished: 0,
         imageUrl: '',
     });
-
+    
     const [imageFile, setImageFile] = useState(null);
     const [uploading, setUploading] = useState(false);
     const [error, setError] = useState('');
@@ -41,12 +45,24 @@ function CreateBook() {
         setUploading(true);
         let imageUrl = '';
         try {
+            const request = {
+                scopes: ['https://bookappstore.onmicrosoft.com/books-api/books.read'],
+                account: accounts[0]
+            };
+            
+            const response = await instance.acquireTokenSilent(request);
+            
+            const token = response.accessToken;
+            console.log(request.account);
             if (imageFile) {
                 const formData = new FormData();
                 formData.append('file', imageFile);
 
                 const res = await fetch('/api/books/upload', {
                     method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
                     body: formData,
                 });
 
@@ -75,10 +91,21 @@ function CreateBook() {
         }
         try {
             setLoading(true);
+
+            // Acquire the token
+            const { instance, accounts } = useMsal();
+            const request = {
+                ...msalRequest,
+                account: accounts[0]
+            };
+            const response = await instance.acquireTokenSilent(request);
+            const token = response.accessToken;
+
             const res = await fetch('/api/books', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(formData),
             });

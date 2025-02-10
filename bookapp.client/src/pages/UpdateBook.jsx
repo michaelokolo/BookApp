@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState} from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
@@ -6,8 +6,14 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Card from 'react-bootstrap/Card';
 import { useNavigate, useParams } from 'react-router-dom';
+import useFetchWithMsal from '../hooks/useFetchWithMsal';
+import { protectedResources } from "../authConfig";
+import { useMsal, useMsalAuthentication } from "@azure/msal-react";
+import {InteractionType } from '@azure/msal-browser'
+
 
 function UpdateBook() {
+    const { instance } = useMsal();
     const params = useParams();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -19,25 +25,45 @@ function UpdateBook() {
         description: ''
     });
 
+    /*const { error, execute } = useFetchWithMsal({
+        scopes: protectedResources.apibooks.scopes.write,
+    });*/
+
+    
+
     useEffect(() => {
-        const fetchbook = async () => {
-            const res = await fetch(`/api/books/${params.bookId}`);
-            const data = await res.json();
-            if (data.success === false) {
-                console.log(data.message);
-                return;
+        const fetchBook = async () => {
+            try {
+                const res = await fetch(`/api/books/${params.bookId}`);
+                if (!res.ok) {
+                    throw new Error(`Server responded with a status code of ${res.status}`);
+                }
+                const data = await res.json();
+                setFormData({
+                    id: data.id,
+                    title: data.title || '',
+                    author: data.author || '',
+                    price: data.price || 0,
+                    yearPublished: data.yearPublished || 0,
+                    description: data.description || '',
+                });
+            } catch (error) {
+                console.error(error);
             }
-            setFormData({
-                id: data.id,
-                title: data.title || '',
-                author: data.author || '',
-                price: data.price || 0,
-                yearPublished: data.yearPublished || 0,
-                description: data.description || '',
-            });
         };
 
-        fetchbook();
+        /** */
+
+        const { result, error: msalError } = useMsalAuthentication(InteractionType.Popup, {
+            scopes: protectedResources.apibooks.scopes.write,
+            account: instance.getActiveAccount(),
+            redirectUri: '/'
+        });
+        console.log(instance)
+
+
+
+        fetchBook();
     }, [params.bookId]);
 
     const handleChange = (e) => {
@@ -47,6 +73,18 @@ function UpdateBook() {
             [e.target.id]: value
         });
     };
+
+    /*const handleUpdate = async (e) => {
+        e.preventDefault();
+        try {
+            const data = await execute("PUT", `/api/books/${formData.id}`, formData);
+            const 
+            navigate(`/book-details/${formData.id}`);
+            console.log(data);
+        } catch (error) {
+            console.error(error);
+        }
+    };*/
 
     const handleUpdate = async (e) => {
         e.preventDefault();
@@ -123,10 +161,11 @@ function UpdateBook() {
                                         value={formData.description}
                                     />
                                 </Form.Group>
-                                <Button type="submit" className="w-100" variant="warning"  style={{ padding: '0.8rem 1rem' }}>
+                                <Button type="submit" className="w-100" variant="warning" style={{ padding: '0.8rem 1rem' }}>
                                     Update
                                 </Button>
                             </Form>
+                           
                         </Card.Body>
                     </Card>
                 </Col>

@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import Community from '../components/Community';
 import Promo from '../components/Promo';
 import { AuthenticatedTemplate } from '@azure/msal-react';
+import useFetchWithMsal from '../hooks/useFetchWithMsal';
 
 function BookDetails() {
     const [book, setBook] = useState({

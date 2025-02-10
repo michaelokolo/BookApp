@@ -6,60 +6,45 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
-
-
-
+using Microsoft.Identity.Web.Resource;
 
 namespace BookApp.Server.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class BooksController : ControllerBase
     {
-
-       
-
         private readonly BookContext _context;
-
         private readonly BlobServiceClient _blobServiceClient;
-
-        private readonly string _currentPrincipalId;
 
         public BooksController(BookContext context, BlobServiceClient blobServiceClient)
         {
             _context = context;
             _blobServiceClient = blobServiceClient;
-            _currentPrincipalId = GetCurrentClaimsPrincipal()?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
-            
         }
 
-        private ClaimsPrincipal GetCurrentClaimsPrincipal()
+        private string GetLoggedInUser()
         {
-            return User;
+            return User.FindFirstValue(ClaimTypes.Name) ?? "defaultUser";
         }
 
-        [Authorize(Policy = "WritePolicy")]
+        [RequiredScope("books.write")]
         [HttpPost("upload")]
         public async Task<IActionResult> UploadImage(IFormFile file)
         {
-            if(file == null || file.Length == 0)
+            if (file == null || file.Length == 0)
             {
                 return BadRequest("No file uploaded.");
             }
 
-            if(file.Length > 204800)// 200 KB
+            if (file.Length > 204800) // 200 KB
             {
                 return BadRequest("File size exceeds the maximum allowed size of 200 KB.");
             }
 
-            var userName = User.Identity?.Name;
-            if (string.IsNullOrEmpty(userName))
-            {
-                return BadRequest("User identity is not available.");
-            }
-
-            var containerClient = _blobServiceClient.GetBlobContainerClient(userName);
+            var loggedInUser = GetLoggedInUser();
+            var containerClient = _blobServiceClient.GetBlobContainerClient(loggedInUser);
             await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob);
 
             var blobClient = containerClient.GetBlobClient(file.FileName);
@@ -72,7 +57,6 @@ namespace BookApp.Server.Controllers
 
             // Return the URL of the uploaded blob
             return Ok(new { url = blobClient.Uri.ToString() });
-
         }
 
         [AllowAnonymous]
@@ -83,11 +67,10 @@ namespace BookApp.Server.Controllers
             return Ok(books);
         }
 
-        [Authorize(Policy = "WritePolicy")]
+        [RequiredScope("books.write")]
         [HttpPost]
         public async Task<ActionResult<Book>> CreateBook(Book book)
         {
-            book.UserId = _currentPrincipalId; //Set the UserId to the current user's
             _context.Book.Add(book);
             await _context.SaveChangesAsync();
 
@@ -100,14 +83,14 @@ namespace BookApp.Server.Controllers
         {
             var book = await _context.Book.FindAsync(id);
 
-            if(book == null)
+            if (book == null)
             {
                 return NotFound();
             }
             return book;
         }
 
-        [AllowAnonymous]
+        [RequiredScope("books.read")]
         [HttpGet("search/{searchQuery}")]
         public async Task<IActionResult> SearchBook(string searchQuery)
         {
@@ -132,42 +115,32 @@ namespace BookApp.Server.Controllers
             return Ok(result);
         }
 
-        [Authorize(Policy = "WritePolicy")]
+        [RequiredScope("books.write")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteBook(int id)
         {
             var book = await _context.Book.FindAsync(id);
-            if(book == null)
+            if (book == null)
             {
                 return NotFound();
-            }
-
-            if(book.UserId != _currentPrincipalId)
-            {
-                return Forbid("You are not authorized to delete this book.");
             }
             _context.Book.Remove(book);
             await _context.SaveChangesAsync();
             return NoContent();
         }
 
-        [Authorize(Policy = "WritePolicy")]
+        [RequiredScope("books.write")]
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateBook(int id, Book book)
         {
-            if(id != book.Id)
+            if (id != book.Id)
             {
                 return BadRequest("Book ID Mismatch");
             }
             var _book = await _context.Book.FindAsync(id);
-            if(_book == null)
+            if (_book == null)
             {
                 return NotFound();
-            }
-
-            if (_book.UserId != _currentPrincipalId)
-            {
-                return Forbid("You are not authorized to update this book.");
             }
 
             _book.Title = book.Title;
@@ -176,7 +149,6 @@ namespace BookApp.Server.Controllers
             _book.Price = book.Price;
             _book.YearPublished = book.YearPublished;
 
-            
             _context.Entry(_book).State = EntityState.Modified;
 
             try
@@ -194,60 +166,7 @@ namespace BookApp.Server.Controllers
                     throw;
                 }
             }
-                return Ok(_book);
-
-
+            return Ok(_book);
         }
-
-
-
-        [Authorize(Policy = "ReadPolicy")]
-        [HttpGet]
-        public async Task<IActionResult> GetBooks([FromQuery] string userId)
-        {
-            if (string.IsNullOrEmpty(userId))
-            {
-                return BadRequest("User ID is required.");
-            }
-
-            if (userId != _currentPrincipalId)
-            {
-                return Forbid("You are not authorized to view these books.");
-            }
-
-            var books = await _context.Book.Where(b => b.UserId == userId).ToListAsync();
-            return Ok(books);
-        }
-
-
-
-
-
-
-
-        
-
-        //userinfo
-        [HttpGet("userinfo")]
-        public IActionResult GetUserInfo()
-        {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var userName = User.Identity?.Name;
-            var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
-
-            return Ok(new
-            {
-                UserId = userId,
-                UserName = userName,
-                UserEmail = userEmail
-            });
-        }
-
-
-
     }
 }
-
-
-
-
