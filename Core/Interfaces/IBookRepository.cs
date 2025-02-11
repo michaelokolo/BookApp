@@ -1,4 +1,6 @@
-﻿using BookApp.Core.Models;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using BookApp.Core.Models;
 
 
 namespace BookApp.Core.Interfaces
@@ -7,8 +9,8 @@ namespace BookApp.Core.Interfaces
     {
         Task<IEnumerable<Book>> GetAllBooksAsync();
         Task<Book> GetBookByIdAsync(int id);
-        Task<Book> AddBookAsync(Book book);
-        Task<Book> UpdateBookAsync(Book book);
-        Task<bool> DeleteBookAsync(int id);
+        Task AddBookAsync(Book book);
+        Task UpdateBookAsync(Book book);
+        Task DeleteBookAsync(int id);
     }
 }
