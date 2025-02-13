@@ -1,9 +1,10 @@
-﻿using BookApp.Core.Models;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using BookApp.Core.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookApp.Infrastructure.Persistence
 {
-    public class BookDbContext : DbContext
+    public class BookDbContext : IdentityDbContext<User>
     {
         public BookDbContext(DbContextOptions<BookDbContext> options): base(options)
         {
